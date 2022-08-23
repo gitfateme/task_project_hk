@@ -59,8 +59,8 @@ function Home() {
               <input
                 type="text"
                 className="form-control p-3"
-                placeholder="Search for something"
-                aria-label="Search for something"
+                placeholder="Search in API"
+                aria-label="Search in API"
                 aria-describedby="button-addon2"
                 onChange={handleChange}
               />
