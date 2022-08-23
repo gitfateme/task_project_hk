@@ -3,8 +3,6 @@ import ReactPaginate from "react-paginate";
 import "./styles/PaginatedItems.css";
 
 export default function PaginatedItems(props) {
-  const items = props.data;
-
   const [currentItems, setCurrentItems] = useState(null);
   const [pageCount, setPageCount] = useState(0);
   const [itemOffset, setItemOffset] = useState(0);
@@ -31,12 +29,12 @@ export default function PaginatedItems(props) {
 
   useEffect(() => {
     const endOffset = itemOffset + props.itemsPerPage;
-    setCurrentItems(items.slice(itemOffset, endOffset));
-    setPageCount(Math.ceil(items.length / props.itemsPerPage));
+    setCurrentItems(props.data.slice(itemOffset, endOffset));
+    setPageCount(Math.ceil(props.data.length / props.itemsPerPage));
   }, [itemOffset, props.itemsPerPage, props.data]);
 
   const handlePageClick = (event) => {
-    const newOffset = (event.selected * props.itemsPerPage) % items.length;
+    const newOffset = (event.selected * props.itemsPerPage) % props.data.length;
     setItemOffset(newOffset);
   };
 
