@@ -1,10 +1,11 @@
 import React, { useState } from "react";
 import "./styles/Home.css";
 import axios from "axios";
-import PaginationSection from "./PaginationSection";
+// import PaginationSection from "./PaginationSection";
+import PaginatedItems from "./PaginatedItems";
 
 function Home() {
-  const [searchText, setSearchText] = useState("");
+  const [keyword, setKeyword] = useState("");
   const [data, setData] = useState([]);
 
   function toString(o) {
@@ -28,25 +29,26 @@ function Home() {
   }
 
   function handleChange(e) {
-    setSearchText(e.target.value);
+    setKeyword(e.target.value);
   }
 
   function handleSubmit(e) {
+    e.preventDefault();
+
     function filterData(r) {
-      setData(filterByValue(toString(r.data), searchText));
+      setData(filterByValue(toString(r.data), keyword));
       console.log(data);
     }
 
     let apiUrl = "https://jsonplaceholder.typicode.com/comments";
     axios.get(apiUrl).then(filterData);
-    e.preventDefault();
   }
 
   return (
     <div className="Home ">
       <header className="bg-primary text-white ">
         <div className="container d-flex justify-content-between pt-4">
-          <div>Search results: 2010</div>
+          <div>Search results: {data ? data.length : "..."}</div>
           <div>Username</div>
         </div>
       </header>
@@ -79,7 +81,7 @@ function Home() {
           </form>
         </div>
       </section>
-      <PaginationSection items={data} />
+      <PaginatedItems itemsPerPage={4} data={data} />
     </div>
   );
 }
