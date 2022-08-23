@@ -1,11 +1,26 @@
 import React, { useEffect, useState } from "react";
 import ReactPaginate from "react-paginate";
 import "./styles/PaginatedItems.css";
+import { Button, Modal, ModalHeader, ModalBody, ModalFooter } from "reactstrap";
 
 export default function PaginatedItems(props) {
   const [currentItems, setCurrentItems] = useState(null);
   const [pageCount, setPageCount] = useState(0);
   const [itemOffset, setItemOffset] = useState(0);
+  const [modal, setModal] = useState(false);
+  const [modalItem, setModalItem] = useState([]);
+
+  const toggle = (e) => {
+    e.preventDefault();
+    setModal(!modal);
+    console.log("");
+  };
+
+  const openToggle = (e, item) => {
+    e.preventDefault();
+    setModal(!modal);
+    setModalItem(item);
+  };
 
   function Items({ currentItems }) {
     return (
@@ -20,9 +35,51 @@ export default function PaginatedItems(props) {
                 <br /> postId: {"  "}
                 {item.postId}
               </p>
-              <a href="/">Edit</a>
+              <a href="/" onClick={(event) => openToggle(event, item)}>
+                Edit
+              </a>
             </div>
           ))}
+        <div>
+          <Modal isOpen={modal} toggle={toggle}>
+            <ModalHeader toggle={toggle}>
+              Edit Comment with id #{modalItem.id}
+            </ModalHeader>
+            <ModalBody>
+              <form>
+                <div className="mb-3">
+                  <label htmlFor="nameTextArea" className="form-label">
+                    Name:
+                  </label>
+                  <textarea
+                    className="form-control"
+                    id="nameTextArea"
+                    defaultValue={modalItem.name}
+                  />
+                </div>
+                <div className="mb-3">
+                  <label htmlFor="commentTextArea" className="form-label">
+                    Comment:
+                  </label>
+                  <textarea
+                    className="form-control"
+                    id="commentTextArea"
+                    rows={5}
+                    defaultValue={modalItem.body}
+                  />
+                </div>
+              </form>
+            </ModalBody>
+            <ModalFooter>
+              <Button color="primary" onClick={toggle}>
+                Confirm edit
+              </Button>
+              <Button color="secondary" onClick={toggle}>
+                Cancel
+              </Button>
+            </ModalFooter>
+          </Modal>
+        </div>
       </>
     );
   }

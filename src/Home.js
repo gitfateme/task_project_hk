@@ -4,7 +4,7 @@ import axios from "axios";
 // import PaginationSection from "./PaginationSection";
 import PaginatedItems from "./PaginatedItems";
 
-function Home() {
+function Home(props) {
   const [keyword, setKeyword] = useState("");
   const [data, setData] = useState([]);
 
@@ -48,8 +48,16 @@ function Home() {
     <div className="Home ">
       <header className="bg-primary text-white ">
         <div className="container d-flex justify-content-between pt-4">
-          <div>Search results: {data ? data.length : "..."}</div>
-          <div>Username</div>
+          <div>Search results: {data.length}</div>
+          <div>
+            {props.username ? (
+              props.username
+            ) : (
+              <a href="/login" className="text-white text-decoration-none">
+                Log in
+              </a>
+            )}
+          </div>
         </div>
       </header>
       <section className="pt-5 container">

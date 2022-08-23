@@ -1,13 +1,18 @@
 // import React from "react";
-import React from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-export default function Login() {
+export default function Login(props) {
+  const [username, setUsername] = useState("");
   const navigate = useNavigate();
 
   function hadnleSubmit(e) {
     e.preventDefault();
+    props.handleLogin(username);
     navigate("/");
+  }
+  function handleChange(e) {
+    setUsername(e.target.value);
   }
 
   return (
@@ -17,7 +22,12 @@ export default function Login() {
         onSubmit={hadnleSubmit}
       >
         <div className="mb-3">
-          <input type="text" className="form-control" placeholder="Username" />
+          <input
+            type="text"
+            className="form-control"
+            placeholder="Username"
+            onChange={handleChange}
+          />
         </div>
         <div className="mb-3">
           <input
@@ -26,7 +36,6 @@ export default function Login() {
             placeholder="Password"
           />
         </div>
-
         <button type="submit" className="btn btn-primary w-100">
           Login
         </button>
