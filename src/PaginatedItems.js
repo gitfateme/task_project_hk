@@ -144,10 +144,6 @@ export default function PaginatedItems(props) {
     setPageCount(Math.ceil(data.length / props.itemsPerPage));
   }, [itemOffset, props.itemsPerPage, data]);
 
-  useEffect(() => {
-    setItemOffset(0);
-  }, [data]);
-
   const handlePageClick = (event) => {
     const newOffset = (event.selected * props.itemsPerPage) % data.length;
     setItemOffset(newOffset);
