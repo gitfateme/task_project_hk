@@ -37,7 +37,6 @@ function Home(props) {
 
     function filterData(r) {
       setData(filterByValue(toString(r.data), keyword));
-      console.log(data);
     }
 
     let apiUrl = "https://jsonplaceholder.typicode.com/comments";
@@ -89,7 +88,7 @@ function Home(props) {
           </form>
         </div>
       </section>
-      <PaginatedItems itemsPerPage={4} data={data} />
+      <PaginatedItems itemsPerPage={6} data={data} />
     </div>
   );
 }

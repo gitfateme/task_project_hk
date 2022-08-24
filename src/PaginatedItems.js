@@ -25,21 +25,26 @@ export default function PaginatedItems(props) {
   function Items({ currentItems }) {
     return (
       <>
-        {currentItems &&
-          currentItems.map((item, index) => (
-            <div key={index} className="border p-4 ">
-              <p>
-                Item #{item.id}:<br /> Name:{"  "}
-                {item.name} <br /> Comment:{"  "}
-                {item.body}
-                <br /> postId: {"  "}
-                {item.postId}
-              </p>
-              <a href="/" onClick={(event) => openToggle(event, item)}>
-                Edit
-              </a>
-            </div>
-          ))}
+        <div className="row">
+          {currentItems &&
+            currentItems.map((item, index) => (
+              <div key={index} className="border p-4 col-md-6">
+                <p>
+                  Item #{item.id}:<br /> Name:{"  "}
+                  <a href={`mailto:${item.email.toLowerCase()}`}>
+                    {item.name}
+                  </a>{" "}
+                  <br /> Comment:{"  "}
+                  {item.body}
+                  <br /> postId: {"  "}
+                  {item.postId}
+                </p>
+                <a href="/" onClick={(event) => openToggle(event, item)}>
+                  Edit
+                </a>
+              </div>
+            ))}
+        </div>
         <div>
           <Modal isOpen={modal} toggle={toggle}>
             <ModalHeader toggle={toggle}>
@@ -88,7 +93,11 @@ export default function PaginatedItems(props) {
     const endOffset = itemOffset + props.itemsPerPage;
     setCurrentItems(props.data.slice(itemOffset, endOffset));
     setPageCount(Math.ceil(props.data.length / props.itemsPerPage));
-  }, [itemOffset, props.itemsPerPage, props.data]);
+  }, [itemOffset, props.itemsPerPag, props.data]);
+
+  useEffect(() => {
+    setItemOffset(0);
+  }, [props.data]);
 
   const handlePageClick = (event) => {
     const newOffset = (event.selected * props.itemsPerPage) % props.data.length;
@@ -106,7 +115,7 @@ export default function PaginatedItems(props) {
             breakLabel="..."
             nextLabel="next >"
             onPageChange={handlePageClick}
-            pageRangeDisplayed={5}
+            pageRangeDisplayed={3}
             pageCount={pageCount}
             previousLabel="< previous"
             renderOnZeroPageCount={null}
