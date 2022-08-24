@@ -1,12 +1,15 @@
 import React, { useState } from "react";
 import "./styles/Home.css";
 import axios from "axios";
-// import PaginationSection from "./PaginationSection";
 import PaginatedItems from "./PaginatedItems";
+import { getData } from "./app/newSlice";
+import { useDispatch, useSelector} from "react-redux";
 
-function Home(props) {
+function Home() {
   const [keyword, setKeyword] = useState("");
-  const [data, setData] = useState([]);
+  const username = useSelector((state) => state.new.username);
+  const dispatch = useDispatch();
+  const data = useSelector((state) => state.new.data);
 
   function toString(o) {
     Object.keys(o).forEach((k) => {
@@ -36,7 +39,8 @@ function Home(props) {
     e.preventDefault();
 
     function filterData(r) {
-      setData(filterByValue(toString(r.data), keyword));
+      const newData = filterByValue(toString(r.data), keyword);
+      dispatch(getData(newData));
     }
 
     let apiUrl = "https://jsonplaceholder.typicode.com/comments";
@@ -49,8 +53,8 @@ function Home(props) {
         <div className="container d-flex justify-content-between pt-4">
           <div>Search results: {data.length}</div>
           <div>
-            {props.username ? (
-              props.username
+            {username ? (
+              username
             ) : (
               <a href="/login" className="text-white text-decoration-none">
                 Log in
@@ -79,7 +83,7 @@ function Home(props) {
                 Search
               </button>
             </div>
-            <span>
+            <span  className="d-none d-sm-block">
               API Link:{" "}
               <a href="https://jsonplaceholder.typicode.com/comments">
                 https://jsonplaceholder.typicode.com/comments
@@ -88,7 +92,7 @@ function Home(props) {
           </form>
         </div>
       </section>
-      <PaginatedItems itemsPerPage={6} data={data} />
+      <PaginatedItems itemsPerPage={6} />
     </div>
   );
 }

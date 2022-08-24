@@ -1,18 +1,19 @@
 // import React from "react";
-import React, { useState } from "react";
+import React from "react";
 import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { getUserInput } from "./app/newSlice";
 
-export default function Login(props) {
-  const [username, setUsername] = useState("");
+export default function Login() {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   function hadnleSubmit(e) {
     e.preventDefault();
-    props.handleLogin(username);
     navigate("/");
   }
   function handleChange(e) {
-    setUsername(e.target.value);
+    dispatch(getUserInput(e.target.value));
   }
 
   return (

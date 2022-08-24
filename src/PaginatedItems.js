@@ -1,7 +1,16 @@
 import React, { useEffect, useState } from "react";
 import ReactPaginate from "react-paginate";
 import "./styles/PaginatedItems.css";
-import { Button, Modal, ModalHeader, ModalBody, ModalFooter } from "reactstrap";
+import {
+  Button,
+  Modal,
+  ModalHeader,
+  ModalBody,
+  ModalFooter,
+  Input,
+} from "reactstrap";
+import { useSelector, useDispatch } from "react-redux";
+import { editComment } from "./app/newSlice";
 
 export default function PaginatedItems(props) {
   const [currentItems, setCurrentItems] = useState(null);
@@ -10,16 +19,37 @@ export default function PaginatedItems(props) {
   const [modal, setModal] = useState(false);
   const [modalItem, setModalItem] = useState([]);
 
+  const data = useSelector((state) => state.new.data);
+  const dispatch = useDispatch();
+
   const toggle = (e) => {
     e.preventDefault();
     setModal(!modal);
-    console.log("");
   };
 
   const openToggle = (e, item) => {
     e.preventDefault();
     setModal(!modal);
     setModalItem(item);
+  };
+
+  const handleEdit = (e) => {
+    e.preventDefault();
+    const newName = e.target[0].value;
+    const newEmail = e.target[1].value;
+    const newComment = e.target[2].value;
+    const index = data.indexOf(modalItem);
+    dispatch(
+      editComment({
+        index: index,
+        id: modalItem.id,
+        name: newName,
+        body: newComment,
+        email: newEmail,
+        postId: modalItem.postId,
+      })
+    );
+    setModal(!modal);
   };
 
   function Items({ currentItems }) {
@@ -30,13 +60,18 @@ export default function PaginatedItems(props) {
             currentItems.map((item, index) => (
               <div key={index} className="border p-4 col-md-6">
                 <p>
-                  Item #{item.id}:<br /> Name:{"  "}
+                  <strong>Item #{item.id}:</strong>
+                  <br /> <strong>Name:</strong>
+                  {"  "}
                   <a href={`mailto:${item.email.toLowerCase()}`}>
                     {item.name}
                   </a>{" "}
-                  <br /> Comment:{"  "}
+                  <br /> <strong>Comment:</strong>
+                  {"  "}
                   {item.body}
-                  <br /> postId: {"  "}
+                  <br />
+                  <strong> postId: </strong>
+                  {"  "}
                   {item.postId}
                 </p>
                 <a href="/" onClick={(event) => openToggle(event, item)}>
@@ -51,7 +86,7 @@ export default function PaginatedItems(props) {
               Edit Comment with id #{modalItem.id}
             </ModalHeader>
             <ModalBody>
-              <form>
+              <form onSubmit={handleEdit}>
                 <div className="mb-3">
                   <label htmlFor="nameTextArea" className="form-label">
                     Name:
@@ -60,6 +95,18 @@ export default function PaginatedItems(props) {
                     className="form-control"
                     id="nameTextArea"
                     defaultValue={modalItem.name}
+                    rows={1}
+                  />
+                </div>
+                <div className="mb-3">
+                  <label htmlFor="emailInput" className="form-label">
+                    Email:
+                  </label>
+                  <input
+                    type="email"
+                    className="form-control"
+                    id="emailInput"
+                    defaultValue={modalItem.email}
                   />
                 </div>
                 <div className="mb-3">
@@ -73,16 +120,18 @@ export default function PaginatedItems(props) {
                     defaultValue={modalItem.body}
                   />
                 </div>
+                <ModalFooter>
+                  <Input
+                    className="btn btn-primary w-50"
+                    type="submit"
+                    defaultValue={"Confirm edit"}
+                  ></Input>
+                  <Button color="secondary" onClick={toggle}>
+                    Cancel
+                  </Button>
+                </ModalFooter>
               </form>
             </ModalBody>
-            <ModalFooter>
-              <Button color="primary" onClick={toggle}>
-                Confirm edit
-              </Button>
-              <Button color="secondary" onClick={toggle}>
-                Cancel
-              </Button>
-            </ModalFooter>
           </Modal>
         </div>
       </>
@@ -91,16 +140,16 @@ export default function PaginatedItems(props) {
 
   useEffect(() => {
     const endOffset = itemOffset + props.itemsPerPage;
-    setCurrentItems(props.data.slice(itemOffset, endOffset));
-    setPageCount(Math.ceil(props.data.length / props.itemsPerPage));
-  }, [itemOffset, props.itemsPerPag, props.data]);
+    setCurrentItems(data.slice(itemOffset, endOffset));
+    setPageCount(Math.ceil(data.length / props.itemsPerPage));
+  }, [itemOffset, props.itemsPerPage, data]);
 
   useEffect(() => {
     setItemOffset(0);
-  }, [props.data]);
+  }, [data]);
 
   const handlePageClick = (event) => {
-    const newOffset = (event.selected * props.itemsPerPage) % props.data.length;
+    const newOffset = (event.selected * props.itemsPerPage) % data.length;
     setItemOffset(newOffset);
   };
 
